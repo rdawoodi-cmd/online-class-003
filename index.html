@@ -1,9 +1,17 @@
+<!-- 
+  =============================================================
+  سامانه هوشمند حضور و غیاب و تکالیف کلاسی
+  شماره نسخه: نسخه 2.1 (Version 2.1)
+  تاریخ بروزرسانی: شهریور ۱۴۰۵ / سپتامبر ۲۰۲۶
+  ویژگی‌ها: اتصال مستقیم به Supabase، پنل ۳ زبانه دبیر، ثبت نمرات، خروجی اکسل
+  =============================================================
+-->
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>سامانه حضور و غیاب هوشمند و تکالیف کلاسی</title>
+    <title>سامانه حضور و غیاب هوشمند - نسخه 2.1</title>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -43,8 +51,7 @@
         .header { text-align: center; margin-bottom: 16px; }
         .header h1 { color: var(--primary); font-size: 1.25rem; margin: 0 0 6px 0; font-weight: 800; }
         .badge { font-size: 0.75rem; font-weight: bold; padding: 4px 10px; border-radius: 20px; display: inline-block; }
-        .badge-ver { background: #dbeafe; color: #1e40af; }
-        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-ver { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
         
         .user-pill {
             background: #f1f5f9;
@@ -189,6 +196,14 @@
             text-align: center;
             color: #065f46;
         }
+
+        .version-footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 16px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -209,7 +224,8 @@
     <!-- Student Attendance Form -->
     <div class="card">
         <div class="header">
-            <span class="badge badge-ver">نسخه ۲.۰ ✦ سامانه کلاسی</span>
+            <!-- شماره نسخه ۲.۱ به صورت واضح -->
+            <span class="badge badge-ver">نسخه ۲.۱ ✦ سامانه کلاسی</span>
             <h1>فرم حضور و غیاب دانش‌آموز</h1>
             <div id="eitaaInfo" class="user-pill">
                 <span><i class="fa fa-paper-plane" style="color: #0284c7;"></i> شناسه ایتا:</span>
@@ -282,6 +298,10 @@
         <button type="button" class="btn btn-outline" onclick="openLoginModal()">
             <i class="fa fa-chalkboard-teacher"></i> ورود به پنل مدیریت دبیر
         </button>
+
+        <div class="version-footer">
+            نسخه ۲.۱ - متصل به پایگاه داده ابری Supabase
+        </div>
     </div>
 </div>
 
@@ -289,7 +309,7 @@
 <div id="assignmentsModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3 style="margin:0; font-size:1.05rem; color:var(--primary);"><i class="fa fa-tasks"></i> تکلیف‌ها و کارنامه کلاسی</h3>
+            <h3 style="margin:0; font-size:1.05rem; color:var(--primary);"><i class="fa fa-tasks"></i> تکلیف‌ها و کارنامه کلاسی (نسخه ۲.۱)</h3>
             <button onclick="closeModal('assignmentsModal')" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">&times;</button>
         </div>
         <div id="assignmentsListContainer">
@@ -315,7 +335,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <div>
-                <h3 style="margin:0; font-size:1.1rem; color:var(--primary);"><i class="fa fa-chalkboard-teacher"></i> پنل مدیریت کامل دبیر</h3>
+                <h3 style="margin:0; font-size:1.1rem; color:var(--primary);"><i class="fa fa-chalkboard-teacher"></i> پنل مدیریت کامل دبیر (نسخه ۲.۱)</h3>
                 <span style="font-size:0.75rem; color:#64748b;">مدیریت حضور و غیاب، ثبت و نمره‌دهی تکالیف</span>
             </div>
             <button onclick="closeModal('adminModal')" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">&times;</button>
@@ -405,7 +425,7 @@
 </div>
 
 <script>
-    // Supabase Connection
+    // Supabase Connection Credentials
     const SB_URL = 'https://dzbjznvdrrkfgycxqcnf.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Ymp6bnZkcnJrZmd5Y3hxY25mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2Nzk3NDAsImV4cCI6MjA2MjI1NTc0MH0.SmsfK7s64U7k4hZ0rR-FfXFfLqK0wz1K8-8b-9-g_4U';
     const sb = supabase.createClient(SB_URL, SB_KEY);
@@ -713,7 +733,7 @@
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `حضور_غیاب_${new Date().toLocaleDateString('fa-IR')}.csv`;
+        link.download = `حضور_غیاب_نسخه2.1_${new Date().toLocaleDateString('fa-IR')}.csv`;
         link.click();
     }
 
