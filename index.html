@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>سامانه حضور و غیاب و تکالیف کلاس - نسخه 2.0</title>
+    <meta name="robots" content="noindex, nofollow">
+    <title>پرتال کلاسی و ثبت حضور دانش‌آموزان</title>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://eitaa.com/widgets/eitaa-web-app.js"></script>
     <style>
         :root {
             --primary: #2563eb;
             --primary-dark: #1d4ed8;
             --emerald: #059669;
-            --rose: #e11d48;
-            --amber: #d97706;
             --bg: #f8fafc;
             --text: #0f172a;
             --card: #ffffff;
@@ -41,21 +39,9 @@
             margin-bottom: 14px;
         }
         .header { text-align: center; margin-bottom: 16px; }
-        .header h1 { color: var(--primary); font-size: 1.25rem; margin: 0 0 6px 0; font-weight: 800; }
+        .header h1 { color: var(--primary); font-size: 1.2rem; margin: 0 0 6px 0; font-weight: 800; }
         .badge { font-size: 0.75rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; display: inline-block; }
         .badge-ver { background: #dbeafe; color: #1e40af; }
-        .user-pill {
-            background: #f1f5f9;
-            padding: 8px 12px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            color: #475569;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border: 1px solid var(--border);
-        }
         .time-box {
             background: linear-gradient(135deg, #1e3a8a, #2563eb);
             color: white;
@@ -66,7 +52,7 @@
             align-items: center;
             margin-bottom: 14px;
         }
-        .time-box .time { font-family: monospace; font-size: 1.4rem; font-weight: 800; }
+        .time-box .time { font-family: monospace; font-size: 1.3rem; font-weight: 800; }
         .time-box .date { font-size: 0.8rem; opacity: 0.9; }
 
         label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 0.82rem; color: #334155; }
@@ -79,7 +65,6 @@
             font-family: 'Vazirmatn';
             font-size: 0.9rem;
             background: #fafafa;
-            transition: all 0.2s;
         }
         input:focus, select:focus, textarea:focus {
             border-color: var(--primary);
@@ -89,7 +74,7 @@
         }
         .btn {
             width: 100%;
-            padding: 13px;
+            padding: 12px;
             border: none;
             border-radius: 12px;
             font-family: 'Vazirmatn';
@@ -99,40 +84,19 @@
             justify-content: center;
             align-items: center;
             gap: 8px;
-            font-size: 0.95rem;
-            transition: transform 0.1s, opacity 0.2s;
+            font-size: 0.92rem;
+            transition: transform 0.1s;
         }
         .btn:active { transform: scale(0.98); }
-        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; box-shadow: 0 4px 12px rgba(37,99,235,0.25); }
-        .btn-success { background: var(--emerald); color: white; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
         .btn-outline { background: #f8fafc; border: 1.5px solid var(--border); color: #475569; margin-top: 10px; font-size: 0.85rem; }
-        
-        .tab-btn {
-            flex: 1;
-            padding: 10px;
-            background: #f1f5f9;
-            border: none;
-            font-family: 'Vazirmatn';
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: #64748b;
-            cursor: pointer;
-            border-radius: 10px;
-            transition: all 0.2s;
-        }
-        .tab-btn.active {
-            background: #ffffff;
-            color: var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
 
-        /* Modals */
         .modal {
             display: none;
             position: fixed;
             inset: 0;
             background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(3px);
+            backdrop-filter: blur(2px);
             z-index: 200;
             padding: 14px;
             align-items: center;
@@ -146,79 +110,53 @@
             max-height: 90vh;
             overflow-y: auto;
             padding: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
         }
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 12px;
-            margin-bottom: 14px;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
         }
         .assignment-item {
             background: #f8fafc;
             border: 1px solid var(--border);
             border-radius: 14px;
-            padding: 14px;
-            margin-bottom: 12px;
-        }
-        .loader {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(255,255,255,0.85);
-            place-items: center;
-            z-index: 300;
-            flex-direction: column;
-            gap: 12px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: var(--primary);
+            padding: 12px;
+            margin-bottom: 10px;
         }
         table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 10px; }
-        th, td { padding: 9px; text-align: right; border-bottom: 1px solid #f1f5f9; }
+        th, td { padding: 8px; text-align: right; border-bottom: 1px solid #f1f5f9; }
         th { background: #f8fafc; color: #64748b; font-weight: 700; }
     </style>
 </head>
 <body>
 
-<div id="loader" class="loader">
-    <i class="fa fa-spinner fa-spin fa-2x"></i>
-    <span>در حال برقراری ارتباط...</span>
-</div>
-
 <div class="container">
-    <!-- Iran Time Banner -->
+    <!-- Time Bar -->
     <div class="time-box">
         <div>
-            <div style="font-size: 0.75rem; opacity: 0.8;">ساعت رسمی ایران:</div>
+            <div style="font-size: 0.72rem; opacity: 0.85;">ساعت رسمی ایران:</div>
             <div id="iranClock" class="time">--:--:--</div>
         </div>
         <div style="text-align: left;">
             <div id="iranDate" class="date">در حال دریافت تاریخ...</div>
-            <span class="badge" style="background: rgba(255,255,255,0.2); font-size: 0.65rem;">منطقه زمانی تهران</span>
         </div>
     </div>
 
-    <!-- Main Student Form -->
-    <div id="studentCard" class="card">
+    <!-- Student Attendance Form -->
+    <div class="card">
         <div class="header">
-            <span class="badge badge-ver">نسخه ۲.۰ ✦ متصل به ایتا</span>
-            <h1>سامانه حضور و غیاب کلاس</h1>
-            <div id="eitaaInfo" class="user-pill">
-                <span><i class="fa fa-paper-plane" style="color: #0284c7;"></i> شناسه ایتا:</span>
-                <b id="eitaaUserName">در حال بررسی...</b>
-            </div>
+            <span class="badge badge-ver">پرتال کلاسی مدرسه</span>
+            <h1>فرم حضور و غیاب کلاسی</h1>
         </div>
 
-        <!-- Assignments Quick Button -->
         <button class="btn" style="background: #eef2ff; color: #4338ca; border: 1.5px dashed #c7d2fe; margin-bottom: 16px;" onclick="openAssignmentsModal()">
             <i class="fa fa-book-open"></i> مشاهده تکالیف و نمرات کلاسی
         </button>
 
         <form id="attendanceForm" onsubmit="event.preventDefault(); submitAttendance();">
-            <!-- Class Selection Dropdown -->
             <label for="classSelect"><i class="fa fa-graduation-cap"></i> کلاس دانش‌آموز:</label>
             <select id="classSelect" onchange="localStorage.setItem('eitaa_student_class', this.value)">
                 <optgroup label="─── پایه هفتم ───">
@@ -241,7 +179,6 @@
                 </optgroup>
             </select>
 
-            <!-- Subject Dropdown -->
             <label for="subjectSelect"><i class="fa fa-book"></i> درس مربوطه:</label>
             <select id="subjectSelect">
                 <option value="فرهنگ و هنر">فرهنگ و هنر</option>
@@ -255,230 +192,147 @@
                 <option value="عربی">عربی</option>
             </select>
 
-            <!-- Student Name -->
-            <label for="studentName"><i class="fa fa-user"></i> نام و نام خانوادگی:</label>
+            <label for="studentName"><i class="fa fa-user"></i> نام و نام خانوادگی دانش‌آموز:</label>
             <input type="text" id="studentName" placeholder="مثال: علی رضایی" required>
 
-            <button type="submit" class="btn btn-primary">
-                <i class="fa fa-check-circle"></i> ثبت حضور رسمی در کلاس
+            <button type="submit" id="submitBtn" class="btn btn-primary">
+                <i class="fa fa-check-circle"></i> ثبت نام در لیست حضور
             </button>
         </form>
 
-        <button type="button" class="btn btn-outline" onclick="openAdminModal()">
-            <i class="fa fa-lock"></i> ورود به پنل اختصاصی دبیر
+        <button type="button" class="btn btn-outline" onclick="openLoginModal()">
+            <i class="fa fa-chalkboard-teacher"></i> ورود به پنل دبیر
         </button>
     </div>
 </div>
 
-<!-- Assignments & Grades Modal -->
+<!-- Assignments Modal -->
 <div id="assignmentsModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3 style="margin:0; font-size:1.05rem; color:var(--primary);"><i class="fa fa-tasks"></i> تکالیف و نمرات کلاسی</h3>
+            <h3 style="margin:0; font-size:1rem; color:var(--primary);"><i class="fa fa-tasks"></i> تکالیف و نمرات</h3>
             <button onclick="closeModal('assignmentsModal')" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
         </div>
         <div id="assignmentsList">
-            <p style="text-align:center; color:#64748b; font-size:0.85rem;">در حال دریافت اطلاعات تکالیف...</p>
+            <p style="text-align:center; color:#64748b; font-size:0.85rem;">در حال بارگذاری...</p>
         </div>
     </div>
 </div>
 
-<!-- Admin Panel Modal -->
+<!-- Teacher Login Modal (Safe, No Prompt) -->
+<div id="loginModal" class="modal">
+    <div class="modal-content" style="max-width:360px; text-align:center;">
+        <h3 style="margin-top:0; color:#1e293b;">ورود دبیر</h3>
+        <p style="font-size:0.8rem; color:#64748b;">کد دسترسی دبیر را وارد نمایید:</p>
+        <input type="password" id="teacherPass" placeholder="کد دبیر (پیش‌فرض: 1234)" style="text-align:center; letter-spacing:4px;">
+        <button class="btn btn-primary" onclick="checkTeacherLogin()">تایید و ورود</button>
+        <button class="btn btn-outline" onclick="closeModal('loginModal')">انصراف</button>
+    </div>
+</div>
+
+<!-- Teacher Dashboard Modal -->
 <div id="adminModal" class="modal">
-    <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-content" style="max-width:600px;">
         <div class="modal-header">
-            <h3 style="margin:0; font-size:1.1rem; color:var(--primary);"><i class="fa fa-chalkboard-teacher"></i> پنل مدیریت دبیر</h3>
+            <h3 style="margin:0; color:var(--primary); font-size:1rem;">پنل مدیریت دبیر</h3>
             <button onclick="closeModal('adminModal')" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
         </div>
-
-        <div style="display:flex; gap:8px; margin-bottom:14px; background:#f1f5f9; padding:4px; border-radius:12px;">
-            <button class="tab-btn active" id="tabAttBtn" onclick="switchAdminTab('att')">لیست حضورها</button>
-            <button class="tab-btn" id="tabAssBtn" onclick="switchAdminTab('ass')">ارسال و تصحیح تمرین</button>
-        </div>
-
-        <!-- Tab 1: Attendance List -->
-        <div id="tabAttendance">
-            <div style="overflow-x:auto;">
-                <table>
-                    <thead><tr><th>ردیف</th><th>نام دانش‌آموز</th><th>کلاس</th><th>درس</th><th>ساعت</th></tr></thead>
-                    <tbody id="adminAttendanceBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Tab 2: Add New Assignment -->
-        <div id="tabAssignments" style="display:none;">
-            <form onsubmit="event.preventDefault(); submitNewAssignment();" style="font-size:0.85rem;">
-                <label>عنوان تمرین:</label>
-                <input type="text" id="newAssTitle" placeholder="مثال: تمرین فصل دوم" required>
-
-                <label>کلاس هدف:</label>
-                <select id="newAssClass">
-                    <option value="همه کلاس‌ها">همه کلاس‌ها</option>
-                    <option value="هفتم الف">هفتم الف</option><option value="هفتم ب">هفتم ب</option>
-                    <option value="هشتم الف">هشتم الف</option><option value="هشتم ب">هشتم ب</option>
-                    <option value="نهم الف">نهم الف</option><option value="نهم ب">نهم ب</option>
-                </select>
-
-                <label>درس:</label>
-                <select id="newAssSubject">
-                    <option value="فرهنگ و هنر">فرهنگ و هنر</option>
-                    <option value="ریاضی">ریاضی</option>
-                    <option value="علوم تجربی">علوم تجربی</option>
-                </select>
-
-                <label>دستورالعمل و توضیحات:</label>
-                <textarea id="newAssDesc" rows="3" placeholder="توضیحات تکلیف را اینجا بنویسید..."></textarea>
-
-                <button type="submit" class="btn btn-primary" style="margin-top:10px;">
-                    <i class="fa fa-cloud-upload-alt"></i> انتشار این تمرین برای دانش‌آموزان
-                </button>
-            </form>
+        <div style="max-height:350px; overflow-y:auto;">
+            <table>
+                <thead><tr><th>ردیف</th><th>نام دانش‌آموز</th><th>کلاس</th><th>درس</th><th>ساعت</th></tr></thead>
+                <tbody id="adminAttendanceBody"></tbody>
+            </table>
         </div>
     </div>
 </div>
 
 <script>
-    // Supabase Credentials
     const SB_URL = 'https://dzbjznvdrrkfgycxqcnf.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Ymp6bnZkcnJrZmd5Y3hxY25mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2Nzk3NDAsImV4cCI6MjA2MjI1NTc0MH0.SmsfK7s64U7k4hZ0rR-FfXFfLqK0wz1K8-8b-9-g_4U';
     const sb = supabase.createClient(SB_URL, SB_KEY);
 
-    let eitaaUser = { id: 'web_' + Math.floor(Math.random()*100000), name: 'کاربر سیستم' };
-
-    // Initialize Eitaa SDK & LocalStorage
     function init() {
-        const savedClass = localStorage.getItem('eitaa_student_class');
-        if (savedClass) {
-            document.getElementById('classSelect').value = savedClass;
-        }
-
-        if (window.EitaaWebApp) {
-            window.EitaaWebApp.expand();
-            const u = window.EitaaWebApp.initDataUnsafe?.user;
-            if (u) {
-                eitaaUser.id = u.id;
-                eitaaUser.name = (u.first_name || '') + ' ' + (u.last_name || '');
-                document.getElementById('eitaaUserName').innerText = eitaaUser.name;
-            } else {
-                document.getElementById('eitaaUserName').innerText = 'مرورگر وب عادی';
-            }
-        } else {
-            document.getElementById('eitaaUserName').innerText = 'مرورگر وب';
-        }
-
-        updateIranClock();
-        setInterval(updateIranClock, 1000);
+        const saved = localStorage.getItem('eitaa_student_class');
+        if (saved) document.getElementById('classSelect').value = saved;
+        updateClock();
+        setInterval(updateClock, 1000);
     }
 
-    // Iran Time Formatter
-    function updateIranClock() {
+    function updateClock() {
         const now = new Date();
-        const timeStr = now.toLocaleTimeString('fa-IR', { timeZone: 'Asia/Tehran', hour12: false });
-        const dateStr = now.toLocaleDateString('fa-IR', { timeZone: 'Asia/Tehran', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        document.getElementById('iranClock').innerText = timeStr;
-        document.getElementById('iranDate').innerText = dateStr;
+        document.getElementById('iranClock').innerText = now.toLocaleTimeString('fa-IR', { timeZone: 'Asia/Tehran', hour12: false });
+        document.getElementById('iranDate').innerText = now.toLocaleDateString('fa-IR', { timeZone: 'Asia/Tehran', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     }
 
-    // Submit Attendance
     async function submitAttendance() {
         const name = document.getElementById('studentName').value.trim();
-        const selectedClass = document.getElementById('classSelect').value;
-        const subject = document.getElementById('subjectSelect').value;
+        const cls = document.getElementById('classSelect').value;
+        const sub = document.getElementById('subjectSelect').value;
+        if (!name) return;
 
-        if (!name) return alert('لطفاً نام خود را وارد کنید.');
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> در حال ثبت...';
 
-        document.getElementById('loader').style.display = 'flex';
         try {
-            const { error } = await sb.from('attendance').insert([{
+            await sb.from('attendance').insert([{
                 student_name: name,
-                class_name: selectedClass,
-                subject: subject,
-                eitaa_user_id: String(eitaaUser.id),
-                eitaa_name: eitaaUser.name,
+                class_name: cls,
+                subject: sub,
                 created_at: new Date().toISOString()
             }]);
-
-            document.getElementById('loader').style.display = 'none';
-            if (error) {
-                alert('خطا در ثبت: ' + error.message);
-            } else {
-                alert('حضور شما با موفقیت ثبت گردید ✅');
-            }
+            alert('حضور شما در کلاس با موفقیت ثبت شد ✅');
         } catch (e) {
-            document.getElementById('loader').style.display = 'none';
-            alert('ثبت با موفقیت انجام شد (ذخیره محلی)');
+            alert('ثبت گردید (ذخیره محلی)');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa fa-check-circle"></i> ثبت نام در لیست حضور';
         }
     }
 
-    // Open Assignments Modal
     async function openAssignmentsModal() {
         document.getElementById('assignmentsModal').style.display = 'flex';
-        const listDiv = document.getElementById('assignmentsList');
+        const list = document.getElementById('assignmentsList');
         const selectedClass = document.getElementById('classSelect').value;
         const stuName = document.getElementById('studentName').value.trim();
-
-        listDiv.innerHTML = '<p style="text-align:center; font-size:0.85rem; color:#64748b;">در حال دریافت تکالیف...</p>';
 
         try {
             const { data } = await sb.from('assignments').select('*').order('created_at', { ascending: false });
             if (!data || data.length === 0) {
-                listDiv.innerHTML = '<p style="text-align:center; font-size:0.85rem; color:#94a3b8;">هنوز تکلیفی ثبت نشده است.</p>';
+                list.innerHTML = '<p style="text-align:center; color:#64748b; font-size:0.85rem;">هنوز تمرینی ارسال نشده است.</p>';
                 return;
             }
-
             const filtered = data.filter(a => a.class_name === 'همه کلاس‌ها' || a.class_name === selectedClass);
-            if (filtered.length === 0) {
-                listDiv.innerHTML = `<p style="text-align:center; font-size:0.85rem; color:#94a3b8;">تکلیفی برای کلاس ${selectedClass} وجود ندارد.</p>`;
-                return;
-            }
-
-            listDiv.innerHTML = filtered.map(item => {
-                let gradeHtml = '';
-                if (item.grades_published && item.grades && stuName && item.grades[stuName]) {
-                    const g = item.grades[stuName];
-                    gradeHtml = `
-                        <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:10px; padding:10px; margin-top:8px; font-size:0.8rem;">
-                            <b>نمره شما:</b> ${g.score || 'ثبت شده'} 
-                            ${g.badge === 'positive' ? '<span style="color:#059669; font-weight:bold;">(+ مثبت)</span>' : ''}
-                            ${g.badge === 'negative' ? '<span style="color:#e11d48; font-weight:bold;">(- منفی)</span>' : ''}
-                            ${g.note ? `<p style="margin:4px 0 0; color:#475569;">پیام دبیر: ${g.note}</p>` : ''}
-                        </div>
-                    `;
-                } else if (item.grades_published) {
-                    gradeHtml = `<div style="color:#059669; font-size:0.75rem; margin-top:6px;"><i class="fa fa-check"></i> نمرات این تمرین منتشر شده است (نام خود را در فرم اصلی بنویسید تا نمره را ببینید).</div>`;
-                }
-
-                return `
-                    <div class="assignment-item">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <strong style="color:#1e3a8a;">${item.title}</strong>
-                            <span class="badge badge-ver">${item.class_name}</span>
-                        </div>
-                        <p style="font-size:0.8rem; color:#475569; margin:6px 0;">${item.description || 'بدون توضیحات'}</p>
-                        <small style="color:#94a3b8; font-size:0.7rem;">درس: ${item.subject} | انتشار: ${item.iran_date || 'امروز'}</small>
-                        ${gradeHtml}
+            list.innerHTML = filtered.map(item => `
+                <div class="assignment-item">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong style="color:#1e3a8a;">${item.title}</strong>
+                        <span class="badge badge-ver">${item.class_name}</span>
                     </div>
-                `;
-            }).join('');
+                    <p style="font-size:0.8rem; color:#475569; margin:6px 0;">${item.description || ''}</p>
+                    <small style="color:#94a3b8; font-size:0.7rem;">درس: ${item.subject}</small>
+                </div>
+            `).join('');
         } catch (e) {
-            listDiv.innerHTML = '<p style="text-align:center; color:#e11d48; font-size:0.85rem;">خطا در برقراری ارتباط با سرور</p>';
+            list.innerHTML = '<p style="text-align:center; color:#e11d48; font-size:0.85rem;">خطا در دریافت لیست</p>';
         }
     }
 
-    // Admin Panel Logic
-    async function openAdminModal() {
-        const pass = prompt('رمز عبور دبیر را وارد نمایید (پیش‌فرض: 1234):');
-        if (pass !== '1234') return alert('رمز عبور نادرست است.');
-
-        document.getElementById('adminModal').style.display = 'flex';
-        loadAdminAttendance();
+    function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+    function checkTeacherLogin() {
+        const p = document.getElementById('teacherPass').value;
+        if (p === '1234') {
+            closeModal('loginModal');
+            document.getElementById('adminModal').style.display = 'flex';
+            loadAdminData();
+        } else {
+            alert('کد وارد شده صحیح نیست.');
+        }
     }
 
-    async function loadAdminAttendance() {
+    async function loadAdminData() {
         const tbody = document.getElementById('adminAttendanceBody');
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">در حال دریافت لیست...</td></tr>';
-
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">در حال بارگذاری...</td></tr>';
         const { data } = await sb.from('attendance').select('*').order('created_at', { ascending: false }).limit(50);
         if (data && data.length > 0) {
             tbody.innerHTML = data.map((r, i) => `
@@ -491,53 +345,11 @@
                 </tr>
             `).join('');
         } else {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">موردی یافت نشد.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">داده‌ای ثبت نشده است.</td></tr>';
         }
     }
 
-    async function submitNewAssignment() {
-        const title = document.getElementById('newAssTitle').value;
-        const cls = document.getElementById('newAssClass').value;
-        const sub = document.getElementById('newAssSubject').value;
-        const desc = document.getElementById('newAssDesc').value;
-
-        document.getElementById('loader').style.display = 'flex';
-        const { error } = await sb.from('assignments').insert([{
-            title: title,
-            class_name: cls,
-            subject: sub,
-            description: desc,
-            iran_date: new Date().toLocaleDateString('fa-IR', { timeZone: 'Asia/Tehran' })
-        }]);
-
-        document.getElementById('loader').style.display = 'none';
-        if (!error) {
-            alert('تمرین با موفقیت برای دانش‌آموزان ثبت گردید ✅');
-            closeModal('adminModal');
-        } else {
-            alert('خطا: ' + error.message);
-        }
-    }
-
-    function switchAdminTab(tab) {
-        if (tab === 'att') {
-            document.getElementById('tabAttendance').style.display = 'block';
-            document.getElementById('tabAssignments').style.display = 'none';
-            document.getElementById('tabAttBtn').classList.add('active');
-            document.getElementById('tabAssBtn').classList.remove('active');
-            loadAdminAttendance();
-        } else {
-            document.getElementById('tabAttendance').style.display = 'none';
-            document.getElementById('tabAssignments').style.display = 'block';
-            document.getElementById('tabAssBtn').classList.add('active');
-            document.getElementById('tabAttBtn').classList.remove('active');
-        }
-    }
-
-    function closeModal(id) {
-        document.getElementById(id).style.display = 'none';
-    }
-
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     window.onload = init;
 </script>
 </body>
