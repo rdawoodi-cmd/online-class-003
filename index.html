@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>حضور و غیاب - نسخه 1.6</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://eitaa.com/widgets/eitaa-web-app.js"></script>
+    <style>
+        :root { --p: #2563eb; --bg: #f8fafc; }
+        body { font-family: 'Vazirmatn'; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .card { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); width: 100%; max-width: 400px; }
+        h2 { color: var(--p); text-align: center; }
+        .info { background: #f1f5f9; padding: 10px; border-radius: 10px; font-size: 0.8rem; text-align: center; margin-bottom: 20px; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #ddd; font-family: 'Vazirmatn'; box-sizing: border-box; }
+        .btn { background: var(--p); color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .ver { font-size: 0.7rem; color: #999; text-align: center; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>ثبت حضور در کلاس</h2>
+        <div id="user" class="info">در حال شناسایی کاربر ایتا...</div>
+        <select id="lesson"><option>ریاضی</option><option>علوم</option><option>فارسی</option></select>
+        <input type="text" id="name" placeholder="نام و نام خانوادگی">
+        <button class="btn" onclick="save()">ثبت حضور ✅</button>
+        <div class="ver">نسخه پایدار: 1.6</div>
+    </div>
+    <script>
+        const sb = supabase.createClient('https://dzbjznvdrrkfgycxqcnf.supabase.co', 'sb_publishable_hLm2YZ48fzg-IC_u3BHVSw_PKPVEz0L');
+        function init() {
+            if(window.EitaaWebApp) {
+                window.EitaaWebApp.expand();
+                const u = window.EitaaWebApp.initDataUnsafe?.user;
+                if(u) document.getElementById('user').innerText = "کاربر: " + u.first_name;
+            }
+        }
+        async function save() {
+            const n = document.getElementById('name').value;
+            if(!n) return alert('نام را وارد کنید');
+            const { error } = await sb.from('attendance').insert([{ student_name: n, subject: document.getElementById('lesson').value }]);
+            if(!error) { alert('ثبت شد!'); document.getElementById('name').value=''; }
+            else { alert('خطا در ثبت!'); }
+        }
+        window.onload = init;
+    </script>
+</body>
+</html>
